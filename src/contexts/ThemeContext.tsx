@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { marketplaceConfig } from "@/config/marketplace.config";
 

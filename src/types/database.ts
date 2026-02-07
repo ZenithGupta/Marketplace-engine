@@ -14,7 +14,7 @@ export interface Profile {
   id: string;
   username: string | null;
   avatar_url: string | null;
-  reputation_score: number;
+  reputation_score: number | null;
   created_at: string;
   updated_at: string;
 }

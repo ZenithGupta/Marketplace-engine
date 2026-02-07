@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice, marketplaceConfig } from "@/config/marketplace.config";
@@ -22,23 +22,23 @@ const statusConfig: Record<ListingStatus, { label: string; className: string }> 
 export function ListingCard({ listing, showOwner = false, bidCount }: ListingCardProps) {
   const owner = "owner" in listing ? listing.owner : null;
   const status = statusConfig[listing.status];
-  
+
   // Get first few metadata entries for preview
   const metadataEntries = Object.entries(listing.metadata || {}).slice(0, 3);
 
   return (
-    <Link to={`/listings/${listing.id}`}>
+    <Link href={`/listings/${listing.id}`}>
       <Card className="group overflow-hidden hover-lift border-border/50 hover:border-primary/30 transition-all duration-300">
         {/* Image/Placeholder */}
         <CardHeader className="p-0">
           <div className="h-48 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 flex items-center justify-center relative overflow-hidden">
             <div className="text-6xl opacity-20">📦</div>
-            
+
             {/* Status Badge */}
             <Badge className={`absolute top-3 right-3 ${status.className}`}>
               {status.label}
             </Badge>
-            
+
             {/* Bid Count (if provided) */}
             {bidCount !== undefined && bidCount > 0 && (
               <Badge variant="secondary" className="absolute top-3 left-3">
@@ -98,3 +98,4 @@ export function ListingCard({ listing, showOwner = false, bidCount }: ListingCar
     </Link>
   );
 }
+

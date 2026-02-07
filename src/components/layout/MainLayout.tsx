@@ -1,27 +1,29 @@
-import { ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
+"use client";
+
+import { ReactNode, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { marketplaceConfig } from "@/config/marketplace.config";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { 
-  Sun, 
-  Moon, 
-  User, 
-  LogOut, 
-  LayoutDashboard, 
-  Plus, 
+import {
+  Sun,
+  Moon,
+  User,
+  LogOut,
+  LayoutDashboard,
+  Plus,
   Menu,
   X
 } from "lucide-react";
-import { useState } from "react";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -30,12 +32,12 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/");
+    router.push("/");
   };
 
   return (
@@ -44,7 +46,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <header className="sticky top-0 z-50 w-full border-b border-border/50 glass">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
               <span className="text-white font-bold text-lg">M</span>
             </div>
@@ -55,15 +57,15 @@ export function MainLayout({ children }: MainLayoutProps) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <Link 
-              to="/listings" 
+            <Link
+              href="/listings"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Browse {marketplaceConfig.ITEM_LABEL_PLURAL}
             </Link>
             {user && (
-              <Link 
-                to="/dashboard" 
+              <Link
+                href="/dashboard"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Dashboard
@@ -74,9 +76,9 @@ export function MainLayout({ children }: MainLayoutProps) {
           {/* Actions */}
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={toggleTheme}
               className="text-muted-foreground hover:text-foreground"
             >
@@ -86,8 +88,8 @@ export function MainLayout({ children }: MainLayoutProps) {
             {user ? (
               <>
                 {/* Create Listing Button */}
-                <Button 
-                  onClick={() => navigate("/listings/new")} 
+                <Button
+                  onClick={() => router.push("/listings/new")}
                   className="hidden sm:flex gap-2 bg-gradient-primary hover:opacity-90"
                 >
                   <Plus className="h-4 w-4" />
@@ -104,11 +106,11 @@ export function MainLayout({ children }: MainLayoutProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                    <DropdownMenuItem onClick={() => router.push("/dashboard")}>
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       Dashboard
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/listings/new")} className="sm:hidden">
+                    <DropdownMenuItem onClick={() => router.push("/listings/new")} className="sm:hidden">
                       <Plus className="mr-2 h-4 w-4" />
                       Create {marketplaceConfig.ITEM_LABEL}
                     </DropdownMenuItem>
@@ -122,11 +124,11 @@ export function MainLayout({ children }: MainLayoutProps) {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Button variant="ghost" onClick={() => navigate("/auth")}>
+                <Button variant="ghost" onClick={() => router.push("/auth")}>
                   Sign In
                 </Button>
-                <Button 
-                  onClick={() => navigate("/auth?mode=signup")} 
+                <Button
+                  onClick={() => router.push("/auth?mode=signup")}
                   className="bg-gradient-primary hover:opacity-90"
                 >
                   Get Started
@@ -135,9 +137,9 @@ export function MainLayout({ children }: MainLayoutProps) {
             )}
 
             {/* Mobile Menu Toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
@@ -150,16 +152,16 @@ export function MainLayout({ children }: MainLayoutProps) {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-border/50 bg-background">
             <nav className="container py-4 flex flex-col gap-2">
-              <Link 
-                to="/listings" 
+              <Link
+                href="/listings"
                 className="px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Browse {marketplaceConfig.ITEM_LABEL_PLURAL}
               </Link>
               {user && (
-                <Link 
-                  to="/dashboard" 
+                <Link
+                  href="/dashboard"
                   className="px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -182,9 +184,9 @@ export function MainLayout({ children }: MainLayoutProps) {
               © {new Date().getFullYear()} {marketplaceConfig.APP_NAME}. All rights reserved.
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <Link to="#" className="hover:text-foreground transition-colors">Terms</Link>
-              <Link to="#" className="hover:text-foreground transition-colors">Privacy</Link>
-              <Link to="#" className="hover:text-foreground transition-colors">Support</Link>
+              <Link href="#" className="hover:text-foreground transition-colors">Terms</Link>
+              <Link href="#" className="hover:text-foreground transition-colors">Privacy</Link>
+              <Link href="#" className="hover:text-foreground transition-colors">Support</Link>
             </div>
           </div>
         </div>
@@ -192,3 +194,4 @@ export function MainLayout({ children }: MainLayoutProps) {
     </div>
   );
 }
+

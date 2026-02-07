@@ -1,73 +1,147 @@
-# Welcome to your Lovable project
+# Marketplace Engine
 
-## Project info
+A modern, full-stack marketplace application built with **Next.js 14**, **Supabase**, and **Tailwind CSS**. Features a clean, responsive UI with dark mode support and a robust bidding system.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- 🛍️ **Listings Management** - Create, edit, and manage marketplace listings
+- 💰 **Bidding System** - Make offers on listings with real-time updates  
+- 🔐 **Authentication** - Secure email-based auth via Supabase
+- 🌙 **Dark Mode** - System-aware theme with manual toggle
+- 📱 **Responsive Design** - Works great on mobile and desktop
+- ⚡ **Type-Safe** - Full TypeScript with strict mode
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+| Technology | Purpose |
+|-----------|---------|
+| [Next.js 14](https://nextjs.org/) | React framework with App Router |
+| [Supabase](https://supabase.com/) | Database, Auth, and Real-time |
+| [Tailwind CSS](https://tailwindcss.com/) | Utility-first styling |
+| [shadcn/ui](https://ui.shadcn.com/) | UI component library |
+| [TanStack Query](https://tanstack.com/query) | Server state management |
+| [Zod](https://zod.dev/) | Schema validation |
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js 18+ 
+- npm, yarn, or pnpm
+- Supabase project (free tier works)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ZenithGupta/Marketplace-engine.git
+   cd Marketplace-engine
+   ```
 
-Follow these steps:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. **Set up environment variables**
+   
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Database Setup
+
+Apply the Supabase migrations from the `supabase/migrations` folder to set up:
+- Users/Profiles table
+- Listings table
+- Bids table
+- Row Level Security policies
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── auth/              # Authentication page
+│   ├── dashboard/         # User dashboard
+│   └── listings/          # Listing pages
+├── components/            # React components
+│   ├── auth/             # Auth-related components
+│   ├── layout/           # Layout components
+│   ├── listings/         # Listing components
+│   └── ui/               # shadcn/ui components
+├── config/               # App configuration
+├── contexts/             # React contexts (Auth, Theme)
+├── hooks/                # Custom React hooks
+├── integrations/         # Third-party integrations
+├── lib/                  # Utility functions
+└── types/                # TypeScript type definitions
 ```
 
-**Edit a file directly in GitHub**
+## Configuration
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+The marketplace is **white-label ready**. Customize branding and terminology in:
 
-**Use GitHub Codespaces**
+`src/config/marketplace.config.ts`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```typescript
+export const marketplaceConfig = {
+  APP_NAME: "Your Marketplace",
+  ITEM_LABEL: "Product",        // or "NFT", "Vehicle", etc.
+  SELLER_LABEL: "Vendor",       // or "Creator", "Dealer", etc.
+  BID_LABEL: "Offer",
+  CURRENCY_SYMBOL: "$",
+  // ...more options
+};
+```
 
-## What technologies are used for this project?
+## Scripts
 
-This project is built with:
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm start` | Start production server |
+| `npm run lint` | Run ESLint |
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Deployment
 
-## How can I deploy this project?
+### Vercel (Recommended)
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+1. Connect your GitHub repo to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy!
 
-## Can I connect a custom domain to my Lovable project?
+### Other Platforms
 
-Yes, you can!
+Build the production bundle:
+```bash
+npm run build
+npm start
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Environment Variables
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Your Supabase anon/public key |
+
+> ⚠️ **Never commit `.env` or `.env.local` files!** They contain secrets.
+
+## License
+
+MIT License - feel free to use this for your own projects!
+
+---
+
+Built with ❤️ using Next.js and Supabase

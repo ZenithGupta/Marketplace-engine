@@ -173,6 +173,10 @@
     background-image: var(--gradient-accent);
   }
   
+  .bg-gradient-warm {
+    background-image: var(--gradient-warm);
+  }
+  
   /* Glow effects */
   .shadow-glow {
     box-shadow: var(--shadow-glow);
