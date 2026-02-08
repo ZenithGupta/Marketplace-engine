@@ -15,7 +15,7 @@ function isAdminAuthenticated(req: NextRequest): boolean {
 }
 
 // Available tables for admin
-const ADMIN_TABLES = ['profiles', 'listings', 'bids', 'ownership_history'];
+const ADMIN_TABLES = ['profiles', 'listings', 'bids'];
 
 // GET - Fetch records from a table
 export async function GET(req: NextRequest) {
@@ -90,10 +90,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Invalid table' }, { status: 400 });
         }
 
-        // Prevent direct inserts to ownership_history
-        if (table === 'ownership_history') {
-            return NextResponse.json({ error: 'Cannot insert into ownership_history' }, { status: 403 });
-        }
+
 
         const { data: record, error } = await supabaseAdmin
             .from(table)
@@ -125,10 +122,7 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ error: 'ID is required' }, { status: 400 });
         }
 
-        // Prevent updates to ownership_history
-        if (table === 'ownership_history') {
-            return NextResponse.json({ error: 'Cannot update ownership_history' }, { status: 403 });
-        }
+
 
         const { data: record, error } = await supabaseAdmin
             .from(table)
@@ -161,10 +155,7 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
 
-    // Prevent deletes from ownership_history
-    if (table === 'ownership_history') {
-        return NextResponse.json({ error: 'Cannot delete from ownership_history' }, { status: 403 });
-    }
+
 
     const { error } = await supabaseAdmin
         .from(table)

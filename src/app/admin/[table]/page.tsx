@@ -81,7 +81,6 @@ export default function TableListPage({ params }: { params: { table: string } })
   };
 
   const columns = records.length > 0 ? Object.keys(records[0]).slice(0, 6) : [];
-  const isReadOnly = table === 'ownership_history';
 
   return (
     <div className="table-list">
@@ -237,11 +236,9 @@ export default function TableListPage({ params }: { params: { table: string } })
 
       <div className="table-header">
         <h1 className="table-title">Select {formatTableName(table).toLowerCase()} to change</h1>
-        {!isReadOnly && (
-          <Link href={`/admin/${table}/new`} className="add-btn">
-            + Add {formatTableName(table).toLowerCase()}
-          </Link>
-        )}
+        <Link href={`/admin/${table}/new`} className="add-btn">
+          + Add {formatTableName(table).toLowerCase()}
+        </Link>
       </div>
 
       {isLoading ? (
@@ -295,16 +292,14 @@ export default function TableListPage({ params }: { params: { table: string } })
                         className="action-btn edit-btn"
                         onClick={() => router.push(`/admin/${table}/${record.id}`)}
                       >
-                        {isReadOnly ? 'View' : 'Edit'}
+                        Edit
                       </button>
-                      {!isReadOnly && (
-                        <button
-                          className="action-btn delete-btn"
-                          onClick={() => handleDelete(record.id)}
-                        >
-                          Delete
-                        </button>
-                      )}
+                      <button
+                        className="action-btn delete-btn"
+                        onClick={() => handleDelete(record.id)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>

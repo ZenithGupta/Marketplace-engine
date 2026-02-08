@@ -22,7 +22,6 @@ export default function RecordDetailPage({
     const router = useRouter();
 
     const isNew = id === 'new';
-    const isReadOnly = table === 'ownership_history';
 
     useEffect(() => {
         if (!isNew) {
@@ -150,7 +149,6 @@ export default function RecordDetailPage({
     };
 
     const isFieldEditable = (key: string) => {
-        if (isReadOnly) return false;
         const readOnlyFields = ['id', 'created_at', 'updated_at'];
         return !readOnlyFields.includes(key);
     };
@@ -277,7 +275,6 @@ export default function RecordDetailPage({
 
                 <div className="form-body">
                     {error && <div className="error-message">{error}</div>}
-                    {isReadOnly && <div className="readonly-notice">This table is read-only.</div>}
 
                     {isNew && table === 'profiles' && (
                         <div className="readonly-notice">
@@ -311,11 +308,11 @@ export default function RecordDetailPage({
                 </div>
 
                 <div className="form-actions">
-                    <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isReadOnly}>
+                    <button className="btn btn-primary" onClick={handleSave} disabled={isSaving}>
                         {isSaving ? 'Saving...' : (isNew ? 'Add' : 'Save')}
                     </button>
                     <Link href={`/admin/${table}`} className="btn btn-secondary">Cancel</Link>
-                    {!isNew && !isReadOnly && (
+                    {!isNew && (
                         <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
                     )}
                 </div>

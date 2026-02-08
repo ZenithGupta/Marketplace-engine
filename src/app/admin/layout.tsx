@@ -41,7 +41,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const getNavGroup = (tableName: string) => {
     if (tableName === 'profiles') return 'USERS';
-    if (tableName === 'ownership_history') return 'AUDIT';
     return 'MARKETPLACE';
   };
 
