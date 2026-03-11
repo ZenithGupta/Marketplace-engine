@@ -182,6 +182,8 @@ export default function AdminDashboard() {
 
           <div className="dashboard-grid">
             <div className="tables-section">
+
+
               {Object.entries(groupedTables).map(([group, groupTables]) => (
                 <div key={group} className="table-group">
                   <div className="section-title">{group}</div>

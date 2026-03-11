@@ -39,7 +39,7 @@ export default function Home() {
                         {/* Subheadline */}
                         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                             {marketplaceConfig.APP_NAME} is the trusted platform for buying and selling {marketplaceConfig.ITEM_LABEL_PLURAL.toLowerCase()}.
-                            Place {marketplaceConfig.BID_LABEL_PLURAL.toLowerCase()}, negotiate directly with {marketplaceConfig.SELLER_LABEL_PLURAL.toLowerCase()},
+                            Purchase instantly from verified {marketplaceConfig.VENDOR_LABEL_PLURAL.toLowerCase()},
                             and complete transactions securely.
                         </p>
 
@@ -50,10 +50,10 @@ export default function Home() {
                                     <Button
                                         asChild
                                         size="lg"
-                                        className="bg-gradient-primary hover:opacity-90 shadow-glow"
+                                        className="bg-gradient-brand hover:opacity-90 shadow-glow"
                                     >
-                                        <Link href="/listings/new">
-                                            Create {marketplaceConfig.ITEM_LABEL}
+                                        <Link href="/vendor">
+                                            Open {marketplaceConfig.VENDOR_LABEL} Store
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Link>
                                     </Button>
@@ -66,7 +66,7 @@ export default function Home() {
                                     <Button
                                         asChild
                                         size="lg"
-                                        className="bg-gradient-primary hover:opacity-90 shadow-glow"
+                                        className="bg-gradient-brand hover:opacity-90 shadow-glow"
                                     >
                                         <Link href="/auth?mode=signup">
                                             Get Started Free
@@ -88,7 +88,7 @@ export default function Home() {
                 <div className="container">
                     <div className="grid md:grid-cols-3 gap-8">
                         <div className="text-center space-y-4 p-6">
-                            <div className="mx-auto w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center">
+                            <div className="mx-auto w-12 h-12 rounded-xl bg-gradient-brand flex items-center justify-center">
                                 <Zap className="h-6 w-6 text-white" />
                             </div>
                             <h3 className="text-xl font-semibold">Lightning Fast</h3>
@@ -104,8 +104,8 @@ export default function Home() {
                             </div>
                             <h3 className="text-xl font-semibold">Secure Transactions</h3>
                             <p className="text-muted-foreground">
-                                Every ownership transfer is atomic and recorded.
-                                Full provenance tracking for peace of mind.
+                                Every purchase is secure.
+                                Full tracking and order status updates for peace of mind.
                             </p>
                         </div>
 
@@ -113,10 +113,10 @@ export default function Home() {
                             <div className="mx-auto w-12 h-12 rounded-xl bg-gradient-warm flex items-center justify-center">
                                 <Sparkles className="h-6 w-6 text-white" />
                             </div>
-                            <h3 className="text-xl font-semibold">{marketplaceConfig.SELLER_LABEL} Control</h3>
+                            <h3 className="text-xl font-semibold">{marketplaceConfig.VENDOR_LABEL} Success</h3>
                             <p className="text-muted-foreground">
-                                Review all {marketplaceConfig.BID_LABEL_PLURAL.toLowerCase()} and choose the best one.
-                                You're always in control of who gets your {marketplaceConfig.ITEM_LABEL.toLowerCase()}.
+                                Professional tools to manage inventory, track orders, and interact directly
+                                with loyal customers. You're always in control of your store.
                             </p>
                         </div>
                     </div>
@@ -126,7 +126,7 @@ export default function Home() {
             {/* Featured Listings Section */}
             <section className="py-16">
                 <div className="container">
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center justify-between gap-4 flex-wrap mb-8">
                         <div>
                             <h2 className="text-2xl md:text-3xl font-bold">
                                 Featured {marketplaceConfig.ITEM_LABEL_PLURAL}
@@ -150,7 +150,7 @@ export default function Home() {
                     ) : listingsData?.listings.length ? (
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {listingsData.listings.slice(0, 4).map((listing) => (
-                                <ListingCard key={listing.id} listing={listing} showOwner />
+                                <ListingCard key={listing.id} listing={listing} showVendor />
                             ))}
                         </div>
                     ) : (

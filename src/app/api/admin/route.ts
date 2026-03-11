@@ -15,7 +15,7 @@ function isAdminAuthenticated(req: NextRequest): boolean {
 }
 
 // Available tables for admin
-const ADMIN_TABLES = ['profiles', 'listings', 'bids'];
+const ADMIN_TABLES = ['profiles', 'listings', 'orders'];
 
 // GET - Fetch records from a table
 export async function GET(req: NextRequest) {
@@ -155,7 +155,14 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
 
-
+    if (table === 'profiles') {
+        // Delete the user from auth.users (which will cascade to public.profiles)
+        const { error } = await supabaseAdmin.auth.admin.deleteUser(id);
+        if (error) {
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+        return NextResponse.json({ success: true });
+    }
 
     const { error } = await supabaseAdmin
         .from(table)

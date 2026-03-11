@@ -16,7 +16,7 @@ export function useActiveListings(page: number = 1) {
         .from("listings")
         .select(`
           *,
-          owner:profiles!listings_current_owner_id_fkey(*)
+          owner:profiles(*)
         `, { count: "exact" })
         .eq("status", "ACTIVE")
         .order("created_at", { ascending: false })
@@ -48,7 +48,7 @@ export function useListing(id: string | undefined) {
         .from("listings")
         .select(`
           *,
-          owner:profiles!listings_current_owner_id_fkey(*)
+          owner:profiles(*)
         `)
         .eq("id", id)
         .single();
@@ -81,7 +81,7 @@ export function useMyListings() {
       const { data, error } = await supabase
         .from("listings")
         .select("*")
-        .eq("current_owner_id", user.id)
+        .eq("vendor_id", user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -108,10 +108,12 @@ export function useCreateListing() {
       const { data, error } = await supabase
         .from("listings")
         .insert({
-          current_owner_id: user.id,
+          vendor_id: user.id,
           title: input.title,
           description: input.description || null,
           base_price: input.base_price,
+          stock_quantity: input.stock_quantity ?? marketplaceConfig.DEFAULT_STOCK,
+          image_url: input.image_url || null,
           metadata: input.metadata || {},
           status: input.status || "DRAFT",
         })

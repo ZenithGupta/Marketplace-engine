@@ -30,7 +30,7 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isVendor, isBuyer, isSuperAdmin } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -38,6 +38,12 @@ export function MainLayout({ children }: MainLayoutProps) {
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
+  };
+
+  const getDashboardLink = () => {
+    if (isSuperAdmin) return "/admin";
+    if (isVendor) return "/vendor";
+    return "/dashboard";
   };
 
   return (
@@ -65,7 +71,7 @@ export function MainLayout({ children }: MainLayoutProps) {
             </Link>
             {user && (
               <Link
-                href="/dashboard"
+                href={getDashboardLink()}
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Dashboard
@@ -87,14 +93,16 @@ export function MainLayout({ children }: MainLayoutProps) {
 
             {user ? (
               <>
-                {/* Create Listing Button */}
-                <Button
-                  onClick={() => router.push("/listings/new")}
-                  className="hidden sm:flex gap-2 bg-gradient-primary hover:opacity-90"
-                >
-                  <Plus className="h-4 w-4" />
-                  Create {marketplaceConfig.ITEM_LABEL}
-                </Button>
+                {/* Create Listing Button (Vendors only ideally) */}
+                {isVendor && (
+                  <Button
+                    onClick={() => router.push("/vendor/products/new")}
+                    className="hidden sm:flex gap-2 bg-gradient-primary hover:opacity-90"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Create {marketplaceConfig.ITEM_LABEL}
+                  </Button>
+                )}
 
                 {/* User Menu */}
                 <DropdownMenu>
@@ -106,14 +114,16 @@ export function MainLayout({ children }: MainLayoutProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                    <DropdownMenuItem onClick={() => router.push(getDashboardLink())}>
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       Dashboard
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => router.push("/listings/new")} className="sm:hidden">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create {marketplaceConfig.ITEM_LABEL}
-                    </DropdownMenuItem>
+                    {isVendor && (
+                      <DropdownMenuItem onClick={() => router.push("/vendor/products/new")} className="sm:hidden">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create {marketplaceConfig.ITEM_LABEL}
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                       <LogOut className="mr-2 h-4 w-4" />
@@ -161,7 +171,7 @@ export function MainLayout({ children }: MainLayoutProps) {
               </Link>
               {user && (
                 <Link
-                  href="/dashboard"
+                  href={getDashboardLink()}
                   className="px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >

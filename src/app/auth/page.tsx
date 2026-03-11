@@ -10,10 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { marketplaceConfig } from "@/config/marketplace.config";
-import { Loader2, Mail, Lock, AlertCircle } from "lucide-react";
+import { Loader2, Mail, Lock, AlertCircle, ShoppingBag, Store } from "lucide-react";
 import { z } from "zod";
+import type { UserRole } from "@/types/database";
 
-// Validation schemas
 const emailSchema = z.string().email("Please enter a valid email address");
 const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
 
@@ -23,19 +23,25 @@ function AuthContent() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [selectedRole, setSelectedRole] = useState<UserRole>("buyer");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    const { signIn, signUp, user } = useAuth();
+    const { signIn, signUp, user, loading: authLoading, role } = useAuth();
     const router = useRouter();
 
-    // Redirect if already logged in
     useEffect(() => {
-        if (user) {
-            router.replace("/dashboard");
+        if (!authLoading && user && role) {
+            if (role === 'vendor') {
+                router.replace("/vendor");
+            } else if (role === 'super_admin') {
+                router.replace("/admin");
+            } else {
+                router.replace("/dashboard");
+            }
         }
-    }, [user, router]);
+    }, [user, authLoading, role, router]);
 
     if (user) {
         return null;
@@ -80,7 +86,8 @@ function AuthContent() {
             return;
         }
 
-        router.push("/dashboard");
+        // The useEffect will handle the redirection once user and role are populated
+        // router.push("/dashboard");
     };
 
     const handleSignUp = async (e: React.FormEvent) => {
@@ -91,7 +98,7 @@ function AuthContent() {
         setError(null);
         setSuccessMessage(null);
 
-        const { error } = await signUp(email, password);
+        const { error } = await signUp(email, password, selectedRole);
 
         if (error) {
             if (error.message.includes("already registered")) {
@@ -128,7 +135,6 @@ function AuthContent() {
                                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
                             </TabsList>
 
-                            {/* Error Alert */}
                             {error && (
                                 <div className="mb-4 p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
                                     <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
@@ -136,7 +142,6 @@ function AuthContent() {
                                 </div>
                             )}
 
-                            {/* Success Alert */}
                             {successMessage && (
                                 <div className="mb-4 p-3 rounded-lg bg-success/10 border border-success/20">
                                     <p className="text-sm text-success">{successMessage}</p>
@@ -192,6 +197,39 @@ function AuthContent() {
 
                             <TabsContent value="signup">
                                 <form onSubmit={handleSignUp} className="space-y-4">
+                                    {/* Role Selector */}
+                                    <div className="space-y-2">
+                                        <Label>I want to</Label>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => setSelectedRole("buyer")}
+                                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+                                                    selectedRole === "buyer"
+                                                        ? "border-primary bg-primary/10 text-primary"
+                                                        : "border-border hover:border-primary/50"
+                                                }`}
+                                            >
+                                                <ShoppingBag className="h-6 w-6" />
+                                                <span className="font-medium text-sm">Buy Products</span>
+                                                <span className="text-xs text-muted-foreground">Browse & purchase</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setSelectedRole("vendor")}
+                                                className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+                                                    selectedRole === "vendor"
+                                                        ? "border-primary bg-primary/10 text-primary"
+                                                        : "border-border hover:border-primary/50"
+                                                }`}
+                                            >
+                                                <Store className="h-6 w-6" />
+                                                <span className="font-medium text-sm">Sell Products</span>
+                                                <span className="text-xs text-muted-foreground">Open your store</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <div className="space-y-2">
                                         <Label htmlFor="signup-email">Email</Label>
                                         <div className="relative">
@@ -235,7 +273,7 @@ function AuthContent() {
                                         disabled={loading}
                                     >
                                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                        Create Account
+                                        {selectedRole === "vendor" ? "Create Vendor Account" : "Create Account"}
                                     </Button>
                                 </form>
                             </TabsContent>

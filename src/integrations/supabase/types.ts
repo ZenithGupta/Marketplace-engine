@@ -7,106 +7,61 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
-      bids: {
-        Row: {
-          amount: number
-          bidder_id: string
-          created_at: string
-          id: string
-          listing_id: string
-          message_to_seller: string | null
-          status: Database["public"]["Enums"]["bid_status"]
-          updated_at: string
-        }
-        Insert: {
-          amount: number
-          bidder_id: string
-          created_at?: string
-          id?: string
-          listing_id: string
-          message_to_seller?: string | null
-          status?: Database["public"]["Enums"]["bid_status"]
-          updated_at?: string
-        }
-        Update: {
-          amount?: number
-          bidder_id?: string
-          created_at?: string
-          id?: string
-          listing_id?: string
-          message_to_seller?: string | null
-          status?: Database["public"]["Enums"]["bid_status"]
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bids_bidder_id_fkey"
-            columns: ["bidder_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "bids_listing_id_fkey"
-            columns: ["listing_id"]
-            isOneToOne: false
-            referencedRelation: "listings"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       listings: {
         Row: {
           base_price: number
           created_at: string
-          current_owner_id: string
+          vendor_id: string
           description: string | null
           id: string
           metadata: Json | null
           status: Database["public"]["Enums"]["listing_status"]
           title: string
+          stock_quantity: number
+          image_url: string | null
           updated_at: string
         }
         Insert: {
           base_price: number
           created_at?: string
-          current_owner_id: string
+          vendor_id: string
           description?: string | null
           id?: string
           metadata?: Json | null
           status?: Database["public"]["Enums"]["listing_status"]
           title: string
+          stock_quantity?: number
+          image_url?: string | null
           updated_at?: string
         }
         Update: {
           base_price?: number
           created_at?: string
-          current_owner_id?: string
+          vendor_id?: string
           description?: string | null
           id?: string
           metadata?: Json | null
           status?: Database["public"]["Enums"]["listing_status"]
           title?: string
+          stock_quantity?: number
+          image_url?: string | null
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "listings_current_owner_id_fkey"
-            columns: ["current_owner_id"]
+            foreignKeyName: "listings_vendor_id_fkey"
+            columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
       }
-
       profiles: {
         Row: {
           avatar_url: string | null
@@ -115,6 +70,9 @@ export type Database = {
           reputation_score: number | null
           updated_at: string
           username: string | null
+          role: string
+          store_name: string | null
+          store_description: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -123,6 +81,9 @@ export type Database = {
           reputation_score?: number | null
           updated_at?: string
           username?: string | null
+          role?: string
+          store_name?: string | null
+          store_description?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -131,22 +92,93 @@ export type Database = {
           reputation_score?: number | null
           updated_at?: string
           username?: string | null
+          role?: string
+          store_name?: string | null
+          store_description?: string | null
         }
         Relationships: []
+      }
+      orders: {
+        Row: {
+          id: string
+          product_id: string | null
+          buyer_id: string
+          vendor_id: string
+          quantity: number
+          unit_price: number
+          total_price: number
+          status: Database["public"]["Enums"]["order_status"]
+          shipping_address: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          product_id?: string | null
+          buyer_id: string
+          vendor_id: string
+          quantity?: number
+          unit_price: number
+          total_price: number
+          status?: Database["public"]["Enums"]["order_status"]
+          shipping_address?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string | null
+          buyer_id?: string
+          vendor_id?: string
+          quantity?: number
+          unit_price?: number
+          total_price?: number
+          status?: Database["public"]["Enums"]["order_status"]
+          shipping_address?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      accept_bid: { Args: { p_bid_id: string }; Returns: boolean }
-      can_bid_on_listing: { Args: { p_listing_id: string }; Returns: boolean }
-      is_listing_owner: { Args: { p_listing_id: string }; Returns: boolean }
-      reject_bid: { Args: { p_bid_id: string }; Returns: boolean }
+      purchase_product: {
+        Args: {
+          p_product_id: string
+          p_quantity?: number
+          p_shipping_address?: Json
+        }
+        Returns: string
+      }
     }
     Enums: {
-      bid_status: "OPEN" | "ACCEPTED" | "REJECTED"
-      listing_status: "DRAFT" | "ACTIVE" | "NEGOTIATING" | "SOLD" | "ARCHIVED"
+      listing_status: "DRAFT" | "ACTIVE" | "OUT_OF_STOCK" | "ARCHIVED"
+      order_status: "PENDING" | "CONFIRMED" | "CANCELLED"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -274,8 +306,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      bid_status: ["OPEN", "ACCEPTED", "REJECTED"],
-      listing_status: ["DRAFT", "ACTIVE", "NEGOTIATING", "SOLD", "ARCHIVED"],
+      listing_status: ["DRAFT", "ACTIVE", "OUT_OF_STOCK", "ARCHIVED"],
+      order_status: ["PENDING", "CONFIRMED", "CANCELLED"],
     },
   },
 } as const
